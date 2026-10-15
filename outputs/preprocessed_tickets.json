@@ -54,7 +54,7 @@
     "original_subject": "Deposit failed but money debited",
     "original_message": "Mera bank account se paise cut gaye but deposit platform pe reflect nahi hua. Kya mujhe wait karna chahiye ya complaint raise karu?",
     "subject_for_processing": "Deposit failed but money debited",
-    "message_for_processing": "Money was deducted from my bank account but the deposit was not reflected on the platform. Should I wait or raise a complaint?",
+    "message_for_processing": "Money was deducted from my bank account but it did not reflect on the deposit platform. Should I wait or raise a complaint?",
     "original_language": "hi-en",
     "translated": true,
     "translation_method": "llm"

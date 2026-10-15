@@ -12,7 +12,8 @@ from vocab import INTENTS, LLM_STAGES, QUEUES, SAFETY_LABELS, SENTIMENTS, STAGES
 
 REQUIRED = ["preprocessed_tickets.json", "classified_tickets.json", "retrieval_results.json", "priority_scores.json",
             "routing_decisions.json", "reply_drafts.json", "llm_calls.jsonl"]
-OPTIONAL = ["retrieval_quality.json", "ops_summary.md"]
+OPTIONAL = ["retrieval_quality.json", "ops_summary.md", "handoff_memory.json"]
+HANDOFF_FIELDS = ["ticket_id", "customer_problem_summary", "open_questions", "do_not_say", "recommended_next_action"]
 LOG_FIELDS = ["stage", "timestamp", "provider", "model", "prompt_hash", "input_artifacts", "output_artifact"]
 
 
@@ -96,6 +97,11 @@ def run_checks(tickets_path, kb_path, out_dir):
     check("reply drafts cite retrieved KB articles", not bad_cite, str(bad_cite))
     no_gate = [d["ticket_id"] for d in drafts if not d.get("review_gate_note") or not d.get("draft_reply")]
     check("reply drafts have text and a human review gate note", not no_gate, str(no_gate))
+    if "handoff_memory.json" in data:  # STRETCH 9, checked only when produced
+        handoff = data["handoff_memory.json"]
+        bad = [h.get("ticket_id") for h in handoff if any(f not in h for f in HANDOFF_FIELDS)]
+        check("handoff memory covers all top 5 tickets with required fields",
+              not bad and {h["ticket_id"] for h in handoff} == set(expected_top), str(bad))
 
     stages_logged = [r.get("stage") for r in logs]
     required_stages = [LLM_STAGES[k] for k in ("classification", "routing", "drafting")]

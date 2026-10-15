@@ -11,7 +11,7 @@ Ingest support tickets and a help-centre KB from disk, normalise multilingual ti
 ```bash
 pip install -r requirements.txt
 python main.py          # runs every stage, writes outputs/
-python validate.py      # 21 checks from the brief; exit 1 on any failure; writes outputs/validation_report.md
+python validate.py      # 22 checks (the brief's list + optional artifacts); exit 1 on any failure; writes outputs/validation_report.md
 python -m pytest -q     # 8 tests, run offline
 ```
 
@@ -37,7 +37,7 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 | `priority.py` | the brief's formula, sort, top 5 expedited → `priority_scores.json` | **never** |
 | `route.py` | **Stage 2**: queues + safety label → `routing_decisions.json` | yes; intent→queue fallback |
 | `draft.py` | **Stage 3**: top-5 drafts + review gate → `reply_drafts.json` | yes; KB-template fallback |
-| `reports.py` | `retrieval_quality.json`, `ops_summary.md` (deterministic) | no |
+| `reports.py` | `retrieval_quality.json`, `ops_summary.md`, `handoff_memory.json` (deterministic, built from classification, routing and retrieved KB guidance) | no |
 | `validate.py` | all brief checks + `validation_report.md` | no |
 | `vocab.py` | controlled vocabularies, stage names, formula constants | – |
 | `llm_client.py` | single LLM boundary: provider, temperature 0, one retry, JSON parsing, `llm_calls.jsonl` | – |
@@ -58,7 +58,7 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 - **The offline translation is a small Malay/Hinglish glossary.** It produces rough English that's good enough for keyword rules and TF-IDF. A new language offline would pass through untranslated (the LLM path handles it).
 - **scikit-learn was dropped.** Windows Application Control blocked its compiled DLL on the dev machine, so TF-IDF is about 30 lines of pure Python. The behaviour matches sklearn's smoothed-IDF, sublinear-TF setup.
 - **Exactly 2 articles per ticket**, as required, even when only one is relevant. The second is then marked as filler in `retrieval_quality.json`.
-- Not done: `handoff_memory.json` (STRETCH #9), embeddings, multi-turn conversations, real queue integration. Drafts are never sent.
+- Not done: embeddings, multi-turn conversations, real queue integration. Drafts are never sent.
 
 ## How AI tools were used
 

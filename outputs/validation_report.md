@@ -1,6 +1,6 @@
 # Validation report
 
-**21/21 checks passed**
+**22/22 checks passed**
 
 | Check | Result | Detail |
 |---|---|---|
@@ -23,5 +23,6 @@
 | reply drafts exist for all top 5 priority tickets | PASS | drafted ['T01', 'T02', 'T06', 'T07', 'T09'], expected ['T01', 'T02', 'T06', 'T07', 'T09'] |
 | reply drafts cite retrieved KB articles | PASS | [] |
 | reply drafts have text and a human review gate note | PASS | [] |
+| handoff memory covers all top 5 tickets with required fields | PASS | [] |
 | LLM call log has separate records for classification, routing, drafting | PASS | PREPROCESSING_TRANSLATION, STAGE1_CLASSIFICATION, STAGE2_ROUTING, STAGE3_REPLY_DRAFTING |
 | LLM call records include all required fields | PASS | bad lines [] |

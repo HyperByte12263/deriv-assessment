@@ -1,0 +1,88 @@
+[
+  {
+    "ticket_id": "T07",
+    "customer_problem_summary": "account restriction (critical urgency, angry): Formal complaint if funds remain blocked; customer says funds are blocked, threatens regulator/legal action",
+    "open_questions": [
+      "Has the specialist team already contacted the customer?"
+    ],
+    "do_not_say": [
+      "Any guaranteed outcome or timeline not stated in the KB",
+      "Internal review triggers, risk rules or reasons for a review",
+      "Financial or trading advice",
+      "KB: When an account is under restriction or review, agents should acknowledge the concern, avoid disclosing internal triggers, avoid speculation, and explain that the specialist team will contact the customer if more information is needed.",
+      "Anything that discourages the customer from complaining to a regulator"
+    ],
+    "recommended_next_action": "needs legal or compliance review: Risk, Compliance to review the draft in reply_drafts.json before anything is sent",
+    "kb_context": [
+      "KB07"
+    ]
+  },
+  {
+    "ticket_id": "T02",
+    "customer_problem_summary": "login access (high urgency, frustrated): Can't log in after password reset",
+    "open_questions": [
+      "Which platform and device show the error?",
+      "Does a clean login flow (cleared session) still fail?"
+    ],
+    "do_not_say": [
+      "Any guaranteed outcome or timeline not stated in the KB",
+      "Internal review triggers, risk rules or reasons for a review",
+      "Financial or trading advice"
+    ],
+    "recommended_next_action": "needs specialist review: General Support to review the draft in reply_drafts.json before anything is sent",
+    "kb_context": [
+      "KB04"
+    ]
+  },
+  {
+    "ticket_id": "T01",
+    "customer_problem_summary": "withdrawal issue (high urgency, frustrated): Withdrawal still pending after 5 days",
+    "open_questions": [
+      "Which payment method was used for the withdrawal?",
+      "Were all requested documents accepted?"
+    ],
+    "do_not_say": [
+      "Any guaranteed outcome or timeline not stated in the KB",
+      "Internal review triggers, risk rules or reasons for a review",
+      "Financial or trading advice"
+    ],
+    "recommended_next_action": "needs specialist review: Payments to review the draft in reply_drafts.json before anything is sent",
+    "kb_context": [
+      "KB01"
+    ]
+  },
+  {
+    "ticket_id": "T06",
+    "customer_problem_summary": "deposit issue (high urgency, frustrated): Deposit failed but money debited",
+    "open_questions": [
+      "What is the transaction reference and amount?",
+      "Has the bank confirmed the payment settled?"
+    ],
+    "do_not_say": [
+      "Any guaranteed outcome or timeline not stated in the KB",
+      "Internal review triggers, risk rules or reasons for a review",
+      "Financial or trading advice"
+    ],
+    "recommended_next_action": "needs specialist review: Payments to review the draft in reply_drafts.json before anything is sent",
+    "kb_context": [
+      "KB03"
+    ]
+  },
+  {
+    "ticket_id": "T09",
+    "customer_problem_summary": "deposit issue (high urgency, frustrated): Charged twice for one deposit",
+    "open_questions": [
+      "What is the transaction reference and amount?",
+      "Has the bank confirmed the payment settled?"
+    ],
+    "do_not_say": [
+      "Any guaranteed outcome or timeline not stated in the KB",
+      "Internal review triggers, risk rules or reasons for a review",
+      "Financial or trading advice"
+    ],
+    "recommended_next_action": "needs specialist review: Payments to review the draft in reply_drafts.json before anything is sent",
+    "kb_context": [
+      "KB03"
+    ]
+  }
+]

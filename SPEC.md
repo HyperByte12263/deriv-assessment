@@ -22,7 +22,7 @@ A replayable support-ops pipeline: read `tickets.json` + `kb_articles.json` from
 | Should | SHOULD 7 | `retrieval_quality.json` | deterministic: top score < 0.55, small top-2 margin, or article category not matching intent | |
 | Should | SHOULD 8 | `ops_summary.md` | deterministic counts from artifacts | |
 | Could | STRETCH 10 | `validation_report.md` | written by `validate.py` | |
-| Could | STRETCH 9 | `handoff_memory.json` | only if time remains | |
+| Could | STRETCH 9 | `handoff_memory.json` | deterministic, built from classification, routing and retrieved KB text (no extra LLM call, so it is reproducible) | validate: covers top 5, required fields |
 | Won't | — | embeddings/vector DB, UI, language-detection library, real queue integration, sending replies | out of scope for 60 min; drafts are never sent | |
 
 ## 3. Inputs
@@ -62,7 +62,7 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 | Translation | LLM, glossary fallback | a batch of 12 tickets doesn't justify an MT dependency; offline still produces English keywords | `preprocess.translate()` |
 | Classifier | LLM proposes, rules fill any invalid field | brief requires an LLM call; rules keep it running offline and catch off-vocabulary output | `classify.py` |
 | Risk flags | final = LLM **OR** keyword rule | never under-flag a regulator threat or blocked funds | `classify.py` |
-| Retrieval | scikit-learn TF-IDF + cosine | reproducible, no key, fine for 10 articles | `retrieve.py` |
+| Retrieval | pure-Python TF-IDF + cosine (scikit-learn dropped mid-session: its DLL was blocked by Windows Application Control) | reproducible, no key, no compiled dependency, fine for 10 articles | `retrieve.py` |
 | Priority | pure Python formula | brief: never the LLM | `priority.py` |
 | Safety label | code sets a floor: legal threat → `needs_legal_or_compliance_review`; compliance intents → at least `needs_specialist_review` | LLM may only make it stricter | `route.py` |
 | Drafts | LLM with retrieved KB only; template fallback | citations and banned phrases are checked in code | `draft.py` |

@@ -137,7 +137,9 @@ def main():
 
     write_json(p("retrieval_quality.json"), reports.retrieval_quality(ret))
     Path(p("ops_summary.md")).write_text(reports.ops_summary(tickets, cls, ret, prio, routes), encoding="utf-8")
+    write_json(p("handoff_memory.json"), reports.handoff_memory(pre, cls, ret, prio, routes, articles))
     pipe.advance("RESULTS_FINALISED")
+    validate.write_report(validate.run_checks(args.tickets, args.kb, out), out)  # final report includes optional artifacts
     log.info("done: %d tickets, top 5 = %s", len(tickets), [r["ticket_id"] for r in prio if r["expedited"]])
 
 

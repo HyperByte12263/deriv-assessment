@@ -2,7 +2,7 @@
   {
     "ticket_id": "T07",
     "channel": "email",
-    "draft_reply": "Dear Customer,\n\nWe acknowledge your concern regarding your account restriction and blocked funds. Please be assured that our specialist team will contact you if any further information is needed. A team member will review your case.\n\nSincerely,\nCustomer Support",
+    "draft_reply": "Dear Customer,\n\nWe acknowledge your concern regarding your account restriction and blocked funds. Please be assured that our specialist team will contact you if more information is needed. A team member will review your case.\n\nSincerely,\nSupport Team",
     "citations": [
       "KB07"
     ],
@@ -12,7 +12,7 @@
   {
     "ticket_id": "T02",
     "channel": "chat",
-    "draft_reply": "Hi, we acknowledge your login and invalid session issues after resetting your password. Please try a clean login flow and let us know your platform details if it persists. A team member will review your case.",
+    "draft_reply": "Hi, we acknowledge your login and invalid session issues after your password reset. Please try a clean login flow and let us know your platform details if the issue persists. A team member will review your case.",
     "citations": [
       "KB04"
     ],
@@ -22,7 +22,7 @@
   {
     "ticket_id": "T01",
     "channel": "email",
-    "draft_reply": "Dear Customer,\n\nWe acknowledge your concern regarding your pending withdrawal. Please note that withdrawals may be delayed if additional verification or security review is required. We recommend checking whether all requested documents were submitted and whether your chosen payment method is eligible. A team member will review your case.\n\nSincerely,\nCustomer Support",
+    "draft_reply": "Dear Customer,\n\nWe acknowledge your inquiry regarding your pending withdrawal. Withdrawals may be delayed if additional verification or security review is required. Please check whether all requested documents were submitted and whether your chosen payment method is eligible. A team member will review your case.\n\nSincerely,\nSupport Team",
     "citations": [
       "KB01"
     ],
@@ -32,7 +32,7 @@
   {
     "ticket_id": "T06",
     "channel": "chat",
-    "draft_reply": "Hi, we acknowledge that your deposit is not reflecting despite a bank debit. Please confirm your transaction reference details and whether the payment settled successfully, as some methods take time to reconcile. A team member will review your case.",
+    "draft_reply": "Hi, we acknowledge your missing deposit issue after the bank debit. Please confirm your transaction reference details and whether the payment settled successfully, as some payment methods can take time to reconcile. A team member will review your case.",
     "citations": [
       "KB03"
     ],
