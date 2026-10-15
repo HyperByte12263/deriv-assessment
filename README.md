@@ -58,7 +58,7 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 - **The offline translation is a small Malay/Hinglish glossary.** It produces rough English that's good enough for keyword rules and TF-IDF. A new language offline would pass through untranslated (the LLM path handles it).
 - **scikit-learn was dropped.** Windows Application Control blocked its compiled DLL on the dev machine, so TF-IDF is about 30 lines of pure Python. The behaviour matches sklearn's smoothed-IDF, sublinear-TF setup.
 - **Exactly 2 articles per ticket**, as required, even when only one is relevant. The second is then marked as filler in `retrieval_quality.json`.
-- Not done: embeddings, multi-turn conversations, real queue integration. Drafts are never sent.
+- Not done: embeddings, multi-turn conversations, real queue integration. Drafts are never sent. What I would build next, and in what order, is in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## How AI tools were used
 
