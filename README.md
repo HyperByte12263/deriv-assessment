@@ -1,5 +1,7 @@
 # Deriv hands-on assessment: replayable support-ops pipeline
 
+[![ci](https://github.com/HyperByte12263/deriv-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/HyperByte12263/deriv-assessment/actions/workflows/ci.yml)
+
 > **Provenance:** the scaffold (`llm_client.py` provider wrapper, test setup, `SPEC.md`/`README.md` templates) was prepared before the session. Everything problem-specific was written during the session; see the commit history.
 
 ## Problem
@@ -12,9 +14,10 @@ Ingest support tickets and a help-centre KB from disk, normalise multilingual ti
 pip install -r requirements.txt
 python main.py          # runs every stage, writes outputs/
 python validate.py      # 22 checks (the brief's list + optional artifacts); exit 1 on any failure; writes outputs/validation_report.md
-python -m pytest -q     # 8 tests, run offline
+python -m pytest -q     # 55 tests, run offline (unit tests per module + end-to-end)
 ```
 
+- **CI** (`.github/workflows/ci.yml`) runs on every push: deletes committed artifacts, runs the pipeline with no key, validates, runs pytest. The unit tests target failure paths: off-vocabulary model output, unsafe drafts, malformed input, tampered artifacts.
 - **No key needed.** With no key, every LLM stage uses a deterministic rules fallback, and `llm_calls.jsonl` records it as `provider: offline`. To enable the LLM, copy `.env.example` to `.env` and set `GEMINI_API_KEY` (or `ANTHROPIC_API_KEY`).
 - **Swapped fixtures:** `python main.py --tickets other_tickets.json --kb other_kb.json --out-dir out2`, then `python validate.py --tickets other_tickets.json --kb other_kb.json --out-dir out2`.
 - Inputs `tickets.json` and `kb_articles.json` sit at the repo root. Artifacts go to `outputs/`. The committed `outputs/` come from a live Gemini run.
