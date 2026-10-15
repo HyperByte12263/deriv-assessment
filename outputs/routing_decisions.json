@@ -4,7 +4,7 @@
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "High-urgency withdrawal issue routed to Payments based on KB01 withdrawal review timelines.",
+    "routing_rationale": "High urgency withdrawal issue mapped to KB01 Withdrawal review timelines.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
     "routing_source": "llm"
@@ -14,7 +14,7 @@
     "queues": [
       "General Support"
     ],
-    "routing_rationale": "High-urgency login access issue routed to General Support using KB04 account access guidance.",
+    "routing_rationale": "High urgency login access issue mapped to KB04 Account access and session issues.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
     "routing_source": "llm"
@@ -24,7 +24,7 @@
     "queues": [
       "Compliance"
     ],
-    "routing_rationale": "Verification KYC request routed to Compliance in accordance with KB02 additional verification checks.",
+    "routing_rationale": "KYC verification issue mapped to KB02 Additional verification checks.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": false,
     "routing_source": "llm"
@@ -34,7 +34,7 @@
     "queues": [
       "Product"
     ],
-    "routing_rationale": "Product behavior inquiry routed to Product using KB08 trading performance caveats.",
+    "routing_rationale": "Product behavior inquiry mapped to KB08 Trading bot and strategy-performance caveats.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": false,
     "routing_source": "llm"
@@ -44,7 +44,7 @@
     "queues": [
       "Privacy"
     ],
-    "routing_rationale": "Privacy and data deletion request routed to Privacy based on KB09 data deletion guidelines.",
+    "routing_rationale": "Privacy request mapped to KB09 Data deletion and account closure requests.",
     "reply_safety_label": "needs_legal_or_compliance_review",
     "expedited": false,
     "routing_source": "llm"
@@ -54,7 +54,7 @@
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "Deposit issue routed to Payments based on KB03 deposit pending guidelines.",
+    "routing_rationale": "Deposit issue mapped to KB03 Deposit pending or missing after bank debit.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
     "routing_source": "llm"
@@ -65,7 +65,7 @@
       "Risk",
       "Compliance"
     ],
-    "routing_rationale": "Critical account restriction with legal threats routed to Risk and Compliance using KB07.",
+    "routing_rationale": "Critical account restriction with legal threat and blocked funds mapped to KB07 Account restriction and review communication.",
     "reply_safety_label": "needs_legal_or_compliance_review",
     "expedited": true,
     "routing_source": "llm"
@@ -75,7 +75,7 @@
     "queues": [
       "General Support"
     ],
-    "routing_rationale": "Statement export request routed to General Support referencing KB05 statement exports.",
+    "routing_rationale": "Statement export request mapped to KB05 Statement and report exports.",
     "reply_safety_label": "safe_to_send_after_review",
     "expedited": false,
     "routing_source": "llm"
@@ -85,7 +85,7 @@
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "High-urgency deposit issue routed to Payments based on KB03 deposit pending guidance.",
+    "routing_rationale": "Deposit issue mapped to KB03 Deposit pending or missing after bank debit.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
     "routing_source": "llm"
@@ -95,7 +95,7 @@
     "queues": [
       "Compliance"
     ],
-    "routing_rationale": "KYC proof of address issue routed to Compliance using KB06 proof of address review guidance.",
+    "routing_rationale": "KYC verification issue mapped to KB06 Proof of address review guidance.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": false,
     "routing_source": "llm"
@@ -105,7 +105,7 @@
     "queues": [
       "Risk"
     ],
-    "routing_rationale": "Account restriction routed to Risk based on KB07 account restriction communication.",
+    "routing_rationale": "Account restriction issue mapped to KB07 Account restriction and review communication.",
     "reply_safety_label": "needs_legal_or_compliance_review",
     "expedited": false,
     "routing_source": "llm"
@@ -115,7 +115,7 @@
     "queues": [
       "Developer Support"
     ],
-    "routing_rationale": "API support request routed to Developer Support using KB10 API usage and rate limits.",
+    "routing_rationale": "API support request mapped to KB10 API usage and rate limits.",
     "reply_safety_label": "safe_to_send_after_review",
     "expedited": false,
     "routing_source": "llm"

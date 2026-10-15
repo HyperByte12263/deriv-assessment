@@ -42,7 +42,8 @@ def glossary_translate(text):
     return out
 
 
-SYSTEM = "You translate customer support tickets into plain English. Translate faithfully; do not add or remove facts."
+SYSTEM = ("You translate customer support tickets into plain English. Translate faithfully; do not add or remove facts."
+          + llm_client.UNTRUSTED_RULE)
 
 
 def translate_batch(tickets, input_artifacts, output_artifact):
@@ -55,7 +56,7 @@ def translate_batch(tickets, input_artifacts, output_artifact):
     prompt = (
         "Translate each ticket's subject and message into English.\n"
         'Return a JSON array of objects: {"ticket_id": str, "subject_en": str, "message_en": str}.\n'
-        "Tickets:\n" + json.dumps(payload, ensure_ascii=False, indent=2)
+        "Tickets:\n" + llm_client.untrusted(payload)
     )
     stage = LLM_STAGES["translation"]
     if llm_client.provider() is None:

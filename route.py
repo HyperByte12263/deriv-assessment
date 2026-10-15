@@ -47,7 +47,8 @@ def rule_route(cls, ret, prio):
     return queues, rationale
 
 
-SYSTEM = "You route support tickets to internal queues. Use ONLY the allowed queue names and safety labels. Return JSON only."
+SYSTEM = ("You route support tickets to internal queues. Use ONLY the allowed queue names and safety labels. Return JSON only."
+          + llm_client.UNTRUSTED_RULE)
 
 
 def build_prompt(classified, retrieval, priorities):

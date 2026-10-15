@@ -7,6 +7,7 @@ import json
 import re
 
 import llm_client
+from classify import possible_injection
 from vocab import LLM_STAGES, MIN_GUIDANCE_SCORE
 
 BANNED = re.compile(
@@ -49,6 +50,7 @@ SYSTEM = (
     "You draft customer support replies. Use ONLY the knowledge-base articles provided for each ticket. "
     "Do not speculate, do not promise outcomes or timelines not stated in the articles, do not reveal internal "
     "review logic, triggers or risk rules, and give no financial or trading advice. Return JSON only."
+    + llm_client.UNTRUSTED_RULE
 )
 
 
@@ -61,7 +63,7 @@ def build_prompt(items):
         'Output a JSON array: {"ticket_id": str, "draft_reply": str, "citations": [article_id used]}\n'
         "Cite only article IDs given for that ticket, and only articles you actually used; ignore an article "
         "with a low relevance_score if it is unrelated to the customer's issue.\n"
-        f"Tickets:\n{json.dumps(items, ensure_ascii=False, indent=2)}"
+        f"Tickets:\n{llm_client.untrusted(items)}"
     )
 
 
@@ -95,6 +97,8 @@ def draft_replies(tickets, preprocessed, retrieval, priorities, routes, articles
         llm = by_id.get(tid, {})
         text = llm.get("draft_reply") if isinstance(llm.get("draft_reply"), str) else ""
         citations = [c for c in llm.get("citations", []) if c in retrieved_ids] if isinstance(llm.get("citations"), list) else []
+        if possible_injection(pre_by_id[tid]):
+            text = ""  # OWASP LLM01: never send model text written in reply to a suspected injection
         if text and citations and not BANNED.search(text):
             source = "llm"
         else:

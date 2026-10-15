@@ -14,7 +14,7 @@ Ingest support tickets and a help-centre KB from disk, normalise multilingual ti
 pip install -r requirements.txt
 python main.py          # runs every stage, writes outputs/
 python validate.py      # 23 checks (the brief's list + pydantic schemas + optional artifacts); exit 1 on any failure; writes outputs/validation_report.md
-python -m pytest -q     # 62 tests, run offline (unit tests per module + end-to-end)
+python -m pytest -q     # 66 tests, run offline (unit tests per module + end-to-end)
 ```
 
 - **CI** (`.github/workflows/ci.yml`) runs on every push: deletes committed artifacts, runs the pipeline with no key, validates, runs pytest. The unit tests target failure paths: off-vocabulary model output, unsafe drafts, malformed input, tampered artifacts.
@@ -48,6 +48,7 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 
 ## Design choices
 
+- **Prompt-injection baseline (OWASP LLM01).** Customer text is fenced as `<untrusted_ticket_data>` in every prompt; a detector discards the model's answer on suspected injections, sends the ticket to a specialist and uses the safe template draft (tested). Full OWASP LLM Top 10 self-assessment: [`docs/SECURITY.md`](docs/SECURITY.md).
 - **Typed schemas, fail fast.** `schemas.py` holds a strict pydantic model per artifact. `main.write_json` validates each stage's output before writing it, so bad data stops the run at the stage that produced it (tested). `validate.py` re-checks the files on disk and reports malformed artifacts instead of crashing.
 - **The LLM proposes, code decides.** Every LLM field is checked against the vocabularies in `vocab.py`. An invalid or missing field falls back to the rules value for that ticket and field. The `*_source` field in each artifact records which path was used.
 - **Risk flags are LLM OR rules.** A model miss can never hide a regulator threat or blocked funds, so it can't lower a ticket's priority.

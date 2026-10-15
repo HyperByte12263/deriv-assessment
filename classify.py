@@ -27,6 +27,17 @@ FUNDS_BLOCKED_RE = re.compile(
     r"|\b(blocked|frozen)\b[^.]{0,20}\b(funds?|money|balance)\b", re.I)
 URGENT_RE = re.compile(r"\b(urgent|urgently|immediately|asap|right now|today)\b", re.I)
 DUPLICATE_RE = re.compile(r"\b(twice|duplicate|double)\b", re.I)
+# OWASP LLM01: common injection phrasings. A hit means the model's answer for that ticket is not trusted.
+INJECTION_RE = re.compile(
+    r"\b(ignore|disregard|forget|override)\b[^.]{0,30}\b(instructions?|prompts?|rules|guidelines)\b"
+    r"|\b(system prompt|developer mode|jailbreak)\b|\byou are now\b|\bact as (an?|the)\b"
+    r"|</?untrusted_ticket_data>", re.I)
+
+
+def possible_injection(p):
+    text = " ".join([p.get("original_subject", ""), p.get("original_message", ""),
+                     p["subject_for_processing"], p["message_for_processing"]])
+    return bool(INJECTION_RE.search(text))
 
 
 def _text(p):
@@ -68,7 +79,7 @@ def rule_classify(p):
 
 SYSTEM = (
     "You are a support-ops classifier. Use ONLY the allowed values given. "
-    "Never invent new categories. Return JSON only."
+    "Never invent new categories. Return JSON only." + llm_client.UNTRUSTED_RULE
 )
 
 
@@ -86,7 +97,7 @@ def build_prompt(preprocessed):
         "- mentions_regulator_or_legal_threat: boolean, true only for a threat of regulator complaint, legal action or lawyers\n"
         "- requires_specialist_handling: boolean, true if compliance, payments investigation, privacy/legal, "
         "account restriction or engineering investigation is needed\n"
-        "Tickets (already normalised to English):\n" + json.dumps(tickets, ensure_ascii=False, indent=2)
+        "Tickets (already normalised to English):\n" + llm_client.untrusted(tickets)
     )
 
 
@@ -111,7 +122,8 @@ def classify(preprocessed, input_artifacts, output_artifact):
     out = []
     for p in preprocessed:
         rules = rule_classify(p)
-        llm = by_id.get(p["ticket_id"], {})
+        injection = possible_injection(p)
+        llm = {} if injection else by_id.get(p["ticket_id"], {})  # never trust the model on a suspected injection
         result = {"ticket_id": p["ticket_id"]}
         fallback_fields = []
         for field, rule_value in rules.items():
@@ -126,5 +138,9 @@ def classify(preprocessed, input_artifacts, output_artifact):
         result["translated"] = p["translated"]
         result["classification_source"] = "rules" if len(fallback_fields) == len(rules) else (
             "llm" if not fallback_fields else "llm+rules:" + ",".join(fallback_fields))
+        result["possible_prompt_injection"] = injection
+        if injection:
+            result["requires_specialist_handling"] = True  # a human looks at it
+            result["classification_source"] = "rules (possible prompt injection)"
         out.append(result)
     return out

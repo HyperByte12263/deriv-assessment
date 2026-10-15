@@ -43,6 +43,7 @@ class ClassifiedTicket(Strict):
     original_language: str
     translated: bool
     classification_source: str
+    possible_prompt_injection: bool
 
 
 class RetrievedArticle(Strict):
