@@ -98,6 +98,8 @@ def main():
 
     tickets = load_records(args.tickets, "ticket_id", TICKET_FIELDS)
     articles = load_records(args.kb, "article_id", KB_FIELDS)
+    if len(articles) < retrieve.TOP_K:
+        raise SystemExit(f"{args.kb}: need at least {retrieve.TOP_K} articles to return the top {retrieve.TOP_K}")
     pipe.advance("TICKETS_LOADED")
 
     pre = preprocess.preprocess(tickets, [args.tickets], p("preprocessed_tickets.json"))
