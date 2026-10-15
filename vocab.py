@@ -35,3 +35,4 @@ SPECIALIST_BONUS = 10
 WEAK_RETRIEVAL_BONUS = 8
 WEAK_RETRIEVAL_THRESHOLD = 0.55
 TOP_N_EXPEDITED = 5
+MIN_GUIDANCE_SCORE = 0.15  # retrieved articles below this are filler and never quoted in a draft

@@ -7,7 +7,7 @@ import json
 import re
 
 import llm_client
-from vocab import LLM_STAGES
+from vocab import LLM_STAGES, MIN_GUIDANCE_SCORE
 
 BANNED = re.compile(
     r"\b(guarantee[ds]?|will be (approved|released|resolved|refunded)|within \d+\s*(hours?|days?|minutes?)"
@@ -25,10 +25,15 @@ def review_gate_note(route):
             f"Owner queue(s): {', '.join(route['queues'])}. Do not send automatically.")
 
 
+def relevant(retrieved):
+    """Articles worth using: the top hit always, others only above the filler threshold."""
+    return [a for i, a in enumerate(retrieved) if i == 0 or a["score"] >= MIN_GUIDANCE_SCORE]
+
+
 def template_draft(ticket, pre, retrieved, kb_by_id):
     greeting = "Dear customer," if ticket.get("channel") == "email" else "Hi,"
     guidance = []
-    for a in retrieved:
+    for a in relevant(retrieved):
         guidance += customer_sentences(kb_by_id[a["article_id"]]["body"])[:1]
     body = " ".join(guidance) if guidance else "Your request has been passed to the relevant team."
     return (f"{greeting} thank you for contacting us about \"{pre['subject_for_processing']}\". "
@@ -66,6 +71,7 @@ def draft_replies(tickets, preprocessed, retrieval, priorities, routes, articles
     items = [{"ticket_id": tid, "channel": t_by_id[tid].get("channel"),
               "subject": pre_by_id[tid]["subject_for_processing"], "message": pre_by_id[tid]["message_for_processing"],
               "kb_articles": [{"article_id": a["article_id"], "title": kb_by_id[a["article_id"]]["title"],
+                               "relevance_score": a["score"],
                                "body": kb_by_id[a["article_id"]]["body"]} for a in ret_by_id[tid]]}
              for tid in top5]
     prompt = build_prompt(items)
@@ -88,7 +94,7 @@ def draft_replies(tickets, preprocessed, retrieval, priorities, routes, articles
             source = "llm"
         else:
             text = template_draft(t_by_id[tid], pre_by_id[tid], ret_by_id[tid], kb_by_id)
-            citations = retrieved_ids
+            citations = [a["article_id"] for a in relevant(ret_by_id[tid])]
             source = "template" if not llm else "template (llm draft failed checks)"
         out.append({"ticket_id": tid, "channel": t_by_id[tid].get("channel", ""), "draft_reply": text,
                     "citations": citations, "review_gate_note": review_gate_note(route_by_id[tid]),
