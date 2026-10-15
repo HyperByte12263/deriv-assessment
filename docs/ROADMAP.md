@@ -41,3 +41,101 @@ The 60-minute build proves the shape: staged, validated, offline-safe, every LLM
 - The pipeline makes **4 LLM calls per batch** (translation, classification, routing, drafting), not 4 per ticket. Cost grows with total tokens, not call count, until a batch hits the context limit (item 9).
 - Drafting is the most expensive stage, and it's limited to the top 5. The other stages send short ticket text.
 - Item 10 replaces this estimate with measured cost per ticket. Item 11 is the main lever after that.
+
+---
+
+## Three extensions in more depth
+
+### A. Multi-agent classification: escalate only on disagreement
+
+**Today:** two independent opinions, a batched LLM call and a keyword-rules classifier, with code as the judge. Code merges them field by field (an invalid LLM value is replaced by the rules value), and the risk flags are LLM OR rules.
+
+**Proposed:**
+
+```text
+ticket -> [fast classifier (LLM, batched)] --+
+       -> [rules classifier]               --+--> agree? ----------------------> accept
+                                             |
+                                             +--> disagree on intent, OR high-risk ticket
+                                                  (legal / funds blocked / compliance intent)
+                                                  -> [verifier agent: sees ticket + top KB + both proposals,
+                                                      must pick one or answer "uncertain"]
+                                                  -> code aggregator:
+                                                       picked    -> accept, source = "verifier"
+                                                       uncertain -> intent "other", needs_specialist_review, human queue
+```
+
+- At most one extra call per flagged ticket, so cost scales with the disagreement rate, not the batch size.
+- Each agent call is a separate `llm_calls.jsonl` stage record (`STAGE1B_VERIFICATION`).
+- The aggregator is plain code and unit-tested, like the safety floor today.
+- **Why not a debate or swarm on every ticket:** that multiplies cost and latency, is harder to reproduce, and agents agreeing with each other isn't accuracy. Ship it only if the eval set (item 1) shows a gain in macro-F1 or a lower safety under-labelling rate.
+
+### B. Pydantic schemas as the single source of truth
+
+**Today:** `pydantic` is in `requirements.txt` but not used yet. Formats are checked by hand: the vocabulary lists in `vocab.py`, per-field checks in `classify.py`, `route.py` and `draft.py`, and dict checks in `validate.py`.
+
+**Proposed:** a `schemas.py` with one model per artifact, using `Literal` types built from `vocab.py`:
+
+```python
+class Classification(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    ticket_id: str
+    intent: Literal[*INTENTS]
+    urgency: Literal[*URGENCIES]
+    sentiment: Literal[*SENTIMENTS]
+    mentions_funds_blocked: bool
+    mentions_regulator_or_legal_threat: bool
+    requires_specialist_handling: bool
+```
+
+Used in three places:
+1. **Parsing model output:** `Classification.model_validate(item)` per ticket. A `ValidationError` sends that ticket to the rules fallback and logs the error text.
+2. **Validating artifacts:** `validate.py` checks each file against the same models instead of hand-written checks.
+3. **Constraining generation:** `Classification.model_json_schema()` becomes Gemini's `response_schema` or Anthropic's tool `input_schema`, so the model can't drift on key names (the `message` vs `message_en` bug).
+
+Effort: about half a day, covered by the existing tamper tests.
+
+### C. Storage: Postgres + pgvector (chosen over MongoDB)
+
+**Today:** one JSON file per stage, plus `run_state.json` and `llm_calls.jsonl`. The brief requires files, so they stay as the export. The database is added as the system of record.
+
+**Why Postgres:**
+- **Relational lineage:** run → ticket → classification → retrieval → priority → route → draft → review decision, with foreign keys and one transaction per run.
+- **Vocabulary enforced in the database:** enum types and CHECK constraints act as a second line of defence behind the code.
+- **Hybrid retrieval in one query:** pgvector embeddings plus Postgres full-text search (`tsvector`). That replaces raw TF-IDF and gives a calibrated score for the 0.55 rule.
+- **Audit as SQL:** "drafts reviewers rewrote last week", "tickets whose safety label the floor raised".
+- **JSONB** stores the raw LLM responses and the priority components without schema churn.
+
+**When MongoDB would win:** ticket payloads that vary wildly by channel, with no need for joins or constraints. That isn't the case for a regulated, audit-heavy support flow.
+
+**Schema sketch:**
+
+```sql
+create type intent_t  as enum ('withdrawal_issue','deposit_issue','login_access','verification_kyc','account_restriction',
+                               'product_behavior','privacy_request','statement_export','api_support','other');
+create type queue_t   as enum ('General Support','Payments','Compliance','Risk','Engineering','Product','Privacy','Developer Support');
+create type safety_t  as enum ('safe_to_send_after_review','needs_specialist_review','needs_legal_or_compliance_review');
+
+create table runs            (run_id uuid primary key, started_at timestamptz, provider text, model text,
+                              prompt_version text, status text);
+create table kb_articles     (article_id text primary key, title text, body text, tags text[],
+                              embedding vector(768), tsv tsvector generated always as (to_tsvector('english', title || ' ' || body)) stored);
+create table tickets         (run_id uuid references runs, ticket_id text, payload jsonb, original_language text,
+                              text_for_processing text, primary key (run_id, ticket_id));
+create table classifications (run_id uuid, ticket_id text, intent intent_t, urgency text, sentiment text,
+                              funds_blocked bool, legal_threat bool, specialist bool, source text,
+                              foreign key (run_id, ticket_id) references tickets);
+create table retrievals      (run_id uuid, ticket_id text, rank int check (rank in (1,2)),
+                              article_id text references kb_articles, score real);
+create table priorities      (run_id uuid, ticket_id text, score int, components jsonb, expedited bool);
+create table routes          (run_id uuid, ticket_id text, queues queue_t[], safety_label safety_t, rationale text, source text);
+create table drafts          (draft_id bigserial primary key, run_id uuid, ticket_id text, body text,
+                              citations text[], source text, review_gate_note text);
+create table reviews         (draft_id bigint references drafts, reviewer text, decision text
+                              check (decision in ('approved','edited','rejected')), edited_body text, at timestamptz);
+create table llm_calls       (run_id uuid, stage text, at timestamptz, provider text, model text, prompt_hash text,
+                              input_artifacts text[], output_artifact text, error text, response jsonb);
+```
+
+- **Code change:** a `PgHybridRetriever` with the same `search(query, k)` interface as `TfidfRetriever`, and a `PgSink` called by each stage after it writes its JSON file. The pipeline logic doesn't change.
+- **Operations:** a re-run creates a new `run_id` and never overwrites. Stored prompts in `llm_calls` follow the PII and retention policy (item 8). Migrations are versioned.
