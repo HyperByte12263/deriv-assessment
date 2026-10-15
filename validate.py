@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from priority import compute_priorities
+from schemas import schema_errors
 from vocab import INTENTS, LLM_STAGES, QUEUES, SAFETY_LABELS, SENTIMENTS, STAGES, TOP_N_EXPEDITED, URGENCIES
 
 REQUIRED = ["preprocessed_tickets.json", "classified_tickets.json", "retrieval_results.json", "priority_scores.json",
@@ -18,8 +19,16 @@ LOG_FIELDS = ["stage", "timestamp", "provider", "model", "prompt_hash", "input_a
 
 
 def run_checks(tickets_path, kb_path, out_dir):
-    out = Path(out_dir)
     results = []
+    try:
+        _run_checks(tickets_path, kb_path, out_dir, results)
+    except (KeyError, TypeError, IndexError, AttributeError, ValueError) as e:
+        results.append(("content checks ran without crashing", False, f"{type(e).__name__}: {e}"))
+    return results
+
+
+def _run_checks(tickets_path, kb_path, out_dir, results):
+    out = Path(out_dir)
 
     def check(name, ok, detail=""):
         results.append((name, bool(ok), detail))
@@ -37,6 +46,8 @@ def run_checks(tickets_path, kb_path, out_dir):
             data[f] = json.loads((out / f).read_text(encoding="utf-8"))
         logs = [json.loads(line) for line in (out / "llm_calls.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
         check("JSON files are valid", True)
+        schema = [e for name, rows in [*data.items(), ("llm_calls.jsonl", logs)] for e in schema_errors(name, rows)]
+        check("artifacts match their pydantic schemas", not schema, "; ".join(schema[:5]))
     except (json.JSONDecodeError, OSError) as e:
         check("JSON files are valid", False, str(e))
         return results

@@ -15,6 +15,7 @@ import reports
 import retrieve
 import route
 import validate
+from schemas import ARTIFACT_SCHEMAS, ensure_valid
 from priority import compute_priorities
 from vocab import STAGES
 
@@ -59,6 +60,8 @@ def read_json(path):
 
 def write_json(path, data):
     path = Path(path)
+    if path.name in ARTIFACT_SCHEMAS:
+        ensure_valid(path.name, data)  # fail fast at the stage that produced bad data
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)

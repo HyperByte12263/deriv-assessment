@@ -318,3 +318,35 @@ def test_tampered_artifacts_are_caught(good_run, name, tamper, expected_failure)
 def test_missing_artifact_is_caught(good_run):
     (good_run / "reply_drafts.json").unlink()
     assert failed_checks(good_run) == ["required artifacts exist"]
+
+
+# ---------- schemas (pydantic): errors only a typed schema catches ----------
+
+def _rename_key(row, old, new):
+    row[new] = row.pop(old)
+
+
+@pytest.mark.parametrize("name, tamper", [
+    ("preprocessed_tickets.json", lambda d: d[0].update(translated="yes")),  # string, not bool (strict mode)
+    ("retrieval_results.json", lambda d: d[0]["retrieved_articles"][0].update(score="0.5")),  # no str -> float coercion
+    ("priority_scores.json", lambda d: d[0]["components"].update(base_priority=0)),  # score no longer equals its parts
+    ("routing_decisions.json", lambda d: _rename_key(d[0], "queues", "queus")),  # typo'd key
+    ("reply_drafts.json", lambda d: d[0].update(review_gate_note="")),  # empty gate note
+])
+def test_schema_catches_type_and_shape_errors(good_run, name, tamper):
+    edit(good_run, name, tamper)
+    assert "artifacts match their pydantic schemas" in failed_checks(good_run)
+
+
+def test_validator_reports_instead_of_crashing_on_missing_keys(good_run):
+    edit(good_run, "routing_decisions.json", lambda d: _rename_key(d[0], "queues", "queus"))
+    assert "content checks ran without crashing" in failed_checks(good_run)  # reported, no traceback
+
+
+def test_pipeline_fails_fast_at_the_stage_that_produced_bad_data(tmp_path, monkeypatch):
+    real = route.route
+    monkeypatch.setattr(route, "route", lambda *a, **k: [{**r, "queues": []} for r in real(*a, **k)])
+    monkeypatch.setattr(sys, "argv", ["main.py", "--out-dir", str(tmp_path / "out")])
+    with pytest.raises(SystemExit, match="schema check failed for routing_decisions.json"):
+        main.main()
+    assert not (tmp_path / "out" / "reply_drafts.json").exists()  # later stages never ran

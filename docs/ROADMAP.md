@@ -72,7 +72,7 @@ ticket -> [fast classifier (LLM, batched)] --+
 
 ### B. Pydantic schemas as the single source of truth
 
-**Today:** `pydantic` is in `requirements.txt` but not used yet. Formats are checked by hand: the vocabulary lists in `vocab.py`, per-field checks in `classify.py`, `route.py` and `draft.py`, and dict checks in `validate.py`.
+**Status: partly done in-session.** `schemas.py` now has a strict model per artifact. Every stage's output is validated before it is written (fail fast), and `validate.py` checks every file against its schema (item 2 below). **Still to do:** items 1 and 3, using the models to parse raw LLM output and to constrain generation. Those touch the live LLM path, so they were left for after the session.
 
 **Proposed:** a `schemas.py` with one model per artifact, using `Literal` types built from `vocab.py`:
 
@@ -93,7 +93,7 @@ Used in three places:
 2. **Validating artifacts:** `validate.py` checks each file against the same models instead of hand-written checks.
 3. **Constraining generation:** `Classification.model_json_schema()` becomes Gemini's `response_schema` or Anthropic's tool `input_schema`, so the model can't drift on key names (the `message` vs `message_en` bug).
 
-Effort: about half a day, covered by the existing tamper tests.
+Remaining effort: about 2–3 hours, covered by the existing tamper and fallback tests.
 
 ### C. Storage: Postgres + pgvector (chosen over MongoDB)
 

@@ -13,8 +13,8 @@ Ingest support tickets and a help-centre KB from disk, normalise multilingual ti
 ```bash
 pip install -r requirements.txt
 python main.py          # runs every stage, writes outputs/
-python validate.py      # 22 checks (the brief's list + optional artifacts); exit 1 on any failure; writes outputs/validation_report.md
-python -m pytest -q     # 55 tests, run offline (unit tests per module + end-to-end)
+python validate.py      # 23 checks (the brief's list + pydantic schemas + optional artifacts); exit 1 on any failure; writes outputs/validation_report.md
+python -m pytest -q     # 62 tests, run offline (unit tests per module + end-to-end)
 ```
 
 - **CI** (`.github/workflows/ci.yml`) runs on every push: deletes committed artifacts, runs the pipeline with no key, validates, runs pytest. The unit tests target failure paths: off-vocabulary model output, unsafe drafts, malformed input, tampered artifacts.
@@ -43,10 +43,12 @@ INIT -> TICKETS_LOADED -> PREPROCESSING_COMPLETE -> TICKETS_CLASSIFIED -> KB_RET
 | `reports.py` | `retrieval_quality.json`, `ops_summary.md`, `handoff_memory.json` (deterministic, built from classification, routing and retrieved KB guidance) | no |
 | `validate.py` | all brief checks + `validation_report.md` | no |
 | `vocab.py` | controlled vocabularies, stage names, formula constants | – |
+| `schemas.py` | pydantic model per artifact (strict, `extra="forbid"`, `Literal` types from `vocab.py`); every stage's output is validated before it is written | – |
 | `llm_client.py` | single LLM boundary: provider, temperature 0, one retry, JSON parsing, `llm_calls.jsonl` | – |
 
 ## Design choices
 
+- **Typed schemas, fail fast.** `schemas.py` holds a strict pydantic model per artifact. `main.write_json` validates each stage's output before writing it, so bad data stops the run at the stage that produced it (tested). `validate.py` re-checks the files on disk and reports malformed artifacts instead of crashing.
 - **The LLM proposes, code decides.** Every LLM field is checked against the vocabularies in `vocab.py`. An invalid or missing field falls back to the rules value for that ticket and field. The `*_source` field in each artifact records which path was used.
 - **Risk flags are LLM OR rules.** A model miss can never hide a regulator threat or blocked funds, so it can't lower a ticket's priority.
 - **Safety-label floor in code.** A legal or regulatory threat, account restriction or privacy request → `needs_legal_or_compliance_review`. Specialist cases → at least `needs_specialist_review`. The model may only make the label stricter, and legal threats always add Compliance (tested).

@@ -1,11 +1,12 @@
 # Validation report
 
-**22/22 checks passed**
+**23/23 checks passed**
 
 | Check | Result | Detail |
 |---|---|---|
 | required artifacts exist | PASS |  |
 | JSON files are valid | PASS |  |
+| artifacts match their pydantic schemas | PASS |  |
 | all tickets processed: preprocessed | PASS | got 12 of 12 |
 | all tickets processed: classified | PASS | got 12 of 12 |
 | all tickets processed: retrieval | PASS | got 12 of 12 |
