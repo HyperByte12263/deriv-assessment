@@ -165,3 +165,61 @@ A short survey of production systems and papers on the same problem. Figures mar
 3. **The multi-agent verifier (extension A) becomes a cascade** with a calibrated escalation rule (FrugalGPT and conformal prediction) rather than a fixed "uncertain" answer.
 4. **Guardrails become two-tier** (DoorDash). The current regex and citation checks stay as the cheap first tier.
 5. **Routing rules move into data Ops can edit** (Zendesk), while code keeps the safety floor.
+
+---
+
+## D. Caching, idempotency and replay
+
+The brief asks for a **replayable** pipeline. Today the offline path is deterministic: two runs produce byte-identical artifacts, and a test checks this. The LLM path isn't, though. Even at temperature 0, draft wording changes between runs, and every run re-pays for every call. This section makes LLM runs repeatable, cheaper and safe to retry.
+
+### What exists today
+
+- `prompt_hash` on every `llm_calls.jsonl` record, as the starting point for a cache key
+- `run_state.json` recording stage order and timestamps
+- Deterministic code for every checkable decision, so only the LLM stages need caching
+
+### 1. Content-addressed LLM cache, per ticket
+
+- **Key** = `sha256(stage, provider, model, prompt_version, system_prompt, canonical_json(ticket item + the KB articles it sees))`
+- **Per ticket, not per batch:** one new ticket in a batch of 1,000 shouldn't invalidate the other 999. Look up every ticket first, then send only the misses in one batched call.
+- **Value** = the model output *after* schema validation, plus the provider, model and timestamp. Only validated output is cached.
+- **Invalidation is part of the key:** changing the model, the prompt version or the KB article text produces a different key, so stale hits can't happen silently.
+- **Never cache failures or fallbacks.** A transient 503 shouldn't pin a ticket to the rules answer forever.
+- **Storage:** an `llm_cache` table in Postgres (extension C): `key primary key, stage, model, prompt_version, response jsonb, created_at, expires_at`.
+
+### 2. Stage-level memoisation (build-system style)
+
+- Record a hash of each stage's input artifacts in `run_state.json`. If a stage's inputs haven't changed since the last successful run, reuse its output instead of rerunning it, the way `make` or Bazel do.
+- **Resume after failure:** a run that dies at `ROUTING_COMPLETE` restarts from routing, without re-paying for translation and classification.
+- Code stages (retrieval, priority, safety floor) are cheap and **always recomputed**, so a rule change takes effect immediately.
+
+### 3. Idempotent side effects (once routing writes to real systems)
+
+- **Idempotency key** = `ticket_id + stage + decision_hash`, sent as an `Idempotency-Key` header to the ticket system's API. A retried request can't create a duplicate assignment.
+- **Database upserts** with a unique constraint on `(ticket_id, decision_version)`, so writing the same decision twice is a no-op.
+- **Outbox pattern:** decisions are written to an outbox table in the same transaction as the run, and a separate worker pushes them to the CRM with retries. The pipeline never half-writes.
+- **Drafts are never sent automatically**, so the reviewer's "send" button is the only side effect that reaches a customer. It carries its own idempotency key, so a double-click can't send twice.
+
+### 4. Replay for audit
+
+- Every run gets a `run_id`. With the cache and the stored stage inputs, `python main.py --replay <run_id>` reproduces that run's outputs exactly, with no new LLM calls.
+- That answers audit questions like "why did ticket X go to Risk on 15 Oct?" from stored evidence instead of re-asking a model that may now answer differently.
+
+### 5. Other caches
+
+- **Embeddings** (once pgvector is in): keyed by article content hash, so they're recomputed only when an article changes.
+- **Retrieval index:** rebuilt only when the KB file's hash changes.
+
+### Risks and guardrails
+
+- **PII:** the cache stores prompt-derived data, so it follows the same redaction and retention policy as `llm_calls.jsonl` (item 8), including a TTL.
+- **Isolation:** no cache entry is shared across tenants or brands.
+- **Visibility:** log cache hit or miss per call, plus hit rate and cost saved per run (item 10). Periodically re-run a sample of cache hits live to spot drift between the cached answer and what the model says now.
+
+### Tests that would prove it
+
+- A second run on identical inputs makes **0 LLM calls** and produces byte-identical artifacts.
+- Changing one ticket produces **exactly one cache miss** per LLM stage.
+- Bumping `prompt_version` or the model produces all misses.
+- A provider failure is **not** cached; the next run calls the provider again.
+- Sending the same routing decision twice results in a single write downstream.
