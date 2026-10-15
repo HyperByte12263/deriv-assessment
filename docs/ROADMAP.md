@@ -24,6 +24,7 @@ Numbers and letters refer to the sections below. The ordering rule is that anyth
 | **Should** | first weeks after launch | **10** Cost and latency per ticket in the log + dashboard | Needed before choosing models or justifying the cascade. |
 | **Should** | first weeks after launch | **D1** + **D4** Per-ticket LLM cache + replay by `run_id` | Makes LLM runs replayable for audit, as the brief asks, and cuts repeat cost. |
 | **Should** | first weeks after launch | **4** Real language detection + back-translation check, per-language eval | The offline glossary covers only Malay and Hinglish. |
+| **Should** | first weeks after launch | **E** Business precedence rule table for multi-intent tickets (LLM lists every intent that applies; code picks the primary one by Ops/Compliance-owned precedence) | Tickets often fit several intents. Which one wins is a business decision and shouldn't be left to the model. |
 | **Should** | when volume grows | **9** Batching at scale (token-budget chunking, rate limits, backoff) | One call per stage doesn't survive 10,000 tickets. |
 | **Could** | once the eval set shows a gain | **A** Verifier agent on disagreement / high-risk tickets, as a calibrated cascade | Ship only if it measurably reduces errors. |
 | **Could** | once the eval set shows a gain | Conformal abstention thresholds | Gives Compliance a bounded error rate on auto-handled tickets. |
@@ -255,3 +256,36 @@ The brief asks for a **replayable** pipeline. Today the offline path is determin
 - Bumping `prompt_version` or the model produces all misses.
 - A provider failure is **not** cached; the next run calls the provider again.
 - Sending the same routing decision twice results in a single write downstream.
+
+---
+
+## E. A precedence rule table for tickets that fit more than one category
+
+**The problem:** real tickets often match several intents. T01 is a withdrawal *and* a documents question. T07 is an account restriction *and* blocked funds *and* a regulator threat. T09 is a deposit *and* a duplicate charge. Which one becomes the primary intent decides the owner queue and the safety label, so it's a **business decision, not a language one**.
+
+**Today:** the LLM returns one intent. The rules fallback picks the intent with the most keyword hits, and ties go to whichever comes first in `INTENT_KEYWORDS`. That ordering is an implicit precedence nobody signed off on. Secondary intents are lost, except where the risk flags and `required_queues()` add Compliance or Risk.
+
+**Proposed:** one versioned rule table, owned by Ops and Compliance and stored as data (`rules/precedence.yaml`, later a Postgres table), used by every LLM stage:
+
+| Precedence | When the ticket mentions… | Primary intent / effect | Why |
+|---|---|---|---|
+| 1 | a regulator or legal threat (any intent) | safety label `needs_legal_or_compliance_review`, + Compliance | regulatory exposure beats everything |
+| 2 | `account_restriction` | primary intent; + Risk if funds are blocked | money is held and the customer can't act |
+| 3 | `verification_kyc` | primary intent | blocks withdrawals; compliance-owned |
+| 4 | `withdrawal_issue` | primary intent | customer money leaving |
+| 5 | `deposit_issue` (duplicate charge → + specialist) | primary intent | customer money arriving |
+| 6 | `privacy_request` | primary intent; + Privacy queue as secondary if not primary | legal deadlines on data requests |
+| 7 | `login_access` | primary intent | blocks access, no money at risk |
+| 8–10 | `api_support`, `product_behavior`, `statement_export` | primary intent | informational / technical |
+| 11 | `other` | only if nothing else applies | |
+
+**How each stage uses it:**
+1. **Classification (Stage 1):** the model returns *every* applicable intent with a short quote as evidence (`candidate_intents: [{intent, evidence}]`). It never makes the final pick. Code chooses the primary intent from the table, and the rest are kept as `secondary_intents`.
+2. **Routing (Stage 2):** the primary intent sets the owner queue. Secondary intents add queues (for example a withdrawal that also needs KYC → Payments + Compliance), and the safety floor uses the strictest rule that matches any intent.
+3. **Drafting (Stage 3):** the draft addresses the primary issue first and acknowledges the secondary ones. `handoff_memory.json` lists all of them.
+4. **The prompt text is generated from the table**, so the model sees exactly the rules the code enforces, and the two can't drift apart.
+
+**Governance:**
+- `rule_version` is stored on every artifact and in `llm_calls.jsonl`, so a replay (D4) uses the rules that were in force at the time.
+- Changes go through review with tests: a completeness test (every intent appears exactly once), a test per precedence pair (for example withdrawal + KYC → KYC primary), and an eval-set diff showing which tickets change queue.
+- The safety floor still lives in code. The table can make handling stricter, but no table edit can lower the floor.
