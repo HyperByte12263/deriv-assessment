@@ -1,0 +1,57 @@
+[
+  {
+    "ticket_id": "T01",
+    "issue": "top score 0.3016 for KB01 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T02",
+    "issue": "top score 0.456 for KB04 is below 0.55; second article KB01 has zero overlap and is filler",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity; allow fewer than 2 relevant articles or expand the KB for this topic"
+  },
+  {
+    "ticket_id": "T03",
+    "issue": "top score 0.3331 for KB02 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T04",
+    "issue": "top score 0.5083 for KB08 is below 0.55; second article KB01 has zero overlap and is filler",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity; allow fewer than 2 relevant articles or expand the KB for this topic"
+  },
+  {
+    "ticket_id": "T06",
+    "issue": "top score 0.2954 for KB03 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T07",
+    "issue": "top score 0.3927 for KB07 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T08",
+    "issue": "top score 0.4988 for KB05 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T09",
+    "issue": "top score 0.3273 for KB03 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T10",
+    "issue": "top score 0.5417 for KB06 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T11",
+    "issue": "top score 0.3614 for KB07 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  },
+  {
+    "ticket_id": "T12",
+    "issue": "top score 0.5017 for KB10 is below 0.55",
+    "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
+  }
+]

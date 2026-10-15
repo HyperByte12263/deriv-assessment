@@ -1,0 +1,126 @@
+[
+  {
+    "ticket_id": "T01",
+    "queues": [
+      "Payments"
+    ],
+    "routing_rationale": "intent=withdrawal_issue, urgency=high; best KB KB01 (0.3016); priority 43 (expedited)",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": true,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T02",
+    "queues": [
+      "General Support",
+      "Engineering"
+    ],
+    "routing_rationale": "intent=login_access, urgency=high; best KB KB04 (0.456); priority 53 (expedited)",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": true,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T03",
+    "queues": [
+      "Compliance"
+    ],
+    "routing_rationale": "intent=verification_kyc, urgency=medium; best KB KB02 (0.3331); priority 28",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T04",
+    "queues": [
+      "Product",
+      "Engineering"
+    ],
+    "routing_rationale": "intent=product_behavior, urgency=medium; best KB KB08 (0.5083); priority 18",
+    "reply_safety_label": "safe_to_send_after_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T05",
+    "queues": [
+      "Privacy"
+    ],
+    "routing_rationale": "intent=privacy_request, urgency=medium; best KB KB09 (0.5606); priority 20",
+    "reply_safety_label": "needs_legal_or_compliance_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T06",
+    "queues": [
+      "Payments"
+    ],
+    "routing_rationale": "intent=deposit_issue, urgency=medium; best KB KB03 (0.2954); priority 18",
+    "reply_safety_label": "safe_to_send_after_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T07",
+    "queues": [
+      "Compliance",
+      "Risk"
+    ],
+    "routing_rationale": "intent=account_restriction, urgency=critical, flags=mentions_funds_blocked+mentions_regulator_or_legal_threat; best KB KB07 (0.3927); priority 113 (expedited)",
+    "reply_safety_label": "needs_legal_or_compliance_review",
+    "expedited": true,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T08",
+    "queues": [
+      "General Support"
+    ],
+    "routing_rationale": "intent=statement_export, urgency=low; best KB KB05 (0.4988); priority 11",
+    "reply_safety_label": "safe_to_send_after_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T09",
+    "queues": [
+      "Payments"
+    ],
+    "routing_rationale": "intent=deposit_issue, urgency=high; best KB KB03 (0.3273); priority 43 (expedited)",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": true,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T10",
+    "queues": [
+      "Compliance"
+    ],
+    "routing_rationale": "intent=verification_kyc, urgency=medium; best KB KB06 (0.5417); priority 28",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": false,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T11",
+    "queues": [
+      "Compliance",
+      "Risk"
+    ],
+    "routing_rationale": "intent=account_restriction, urgency=high; best KB KB07 (0.3614); priority 43 (expedited)",
+    "reply_safety_label": "needs_legal_or_compliance_review",
+    "expedited": true,
+    "routing_source": "rules"
+  },
+  {
+    "ticket_id": "T12",
+    "queues": [
+      "Developer Support"
+    ],
+    "routing_rationale": "intent=api_support, urgency=medium; best KB KB10 (0.5017); priority 18",
+    "reply_safety_label": "safe_to_send_after_review",
+    "expedited": false,
+    "routing_source": "rules"
+  }
+]

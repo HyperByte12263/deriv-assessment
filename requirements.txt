@@ -1,7 +1,5 @@
 python-dotenv
 pydantic
-scikit-learn
-rank-bm25
 pytest
 anthropic
 google-genai

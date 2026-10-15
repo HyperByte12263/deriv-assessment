@@ -1,0 +1,194 @@
+[
+  {
+    "ticket_id": "T07",
+    "priority_score": 113,
+    "components": {
+      "base_priority": 40,
+      "customer_tier_bonus": 10,
+      "funds_blocked_bonus": 20,
+      "regulatory_legal_threat_bonus": 25,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.3927,
+    "created_at": "2025-04-14T09:40:00Z",
+    "rank": 1,
+    "expedited": true
+  },
+  {
+    "ticket_id": "T02",
+    "priority_score": 53,
+    "components": {
+      "base_priority": 25,
+      "customer_tier_bonus": 10,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.456,
+    "created_at": "2025-04-14T08:22:00Z",
+    "rank": 2,
+    "expedited": true
+  },
+  {
+    "ticket_id": "T01",
+    "priority_score": 43,
+    "components": {
+      "base_priority": 25,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.3016,
+    "created_at": "2025-04-14T08:10:00Z",
+    "rank": 3,
+    "expedited": true
+  },
+  {
+    "ticket_id": "T09",
+    "priority_score": 43,
+    "components": {
+      "base_priority": 25,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.3273,
+    "created_at": "2025-04-14T10:18:00Z",
+    "rank": 4,
+    "expedited": true
+  },
+  {
+    "ticket_id": "T11",
+    "priority_score": 43,
+    "components": {
+      "base_priority": 25,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.3614,
+    "created_at": "2025-04-14T10:55:00Z",
+    "rank": 5,
+    "expedited": true
+  },
+  {
+    "ticket_id": "T03",
+    "priority_score": 28,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.3331,
+    "created_at": "2025-04-14T08:45:00Z",
+    "rank": 6,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T10",
+    "priority_score": 28,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.5417,
+    "created_at": "2025-04-14T10:35:00Z",
+    "rank": 7,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T05",
+    "priority_score": 20,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 10,
+      "retrieval_weakness_bonus": 0
+    },
+    "top_retrieval_score": 0.5606,
+    "created_at": "2025-04-14T09:15:00Z",
+    "rank": 8,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T04",
+    "priority_score": 18,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 0,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.5083,
+    "created_at": "2025-04-14T09:05:00Z",
+    "rank": 9,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T06",
+    "priority_score": 18,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 0,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.2954,
+    "created_at": "2025-04-14T09:28:00Z",
+    "rank": 10,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T12",
+    "priority_score": 18,
+    "components": {
+      "base_priority": 10,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 0,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.5017,
+    "created_at": "2025-04-14T11:10:00Z",
+    "rank": 11,
+    "expedited": false
+  },
+  {
+    "ticket_id": "T08",
+    "priority_score": 11,
+    "components": {
+      "base_priority": 3,
+      "customer_tier_bonus": 0,
+      "funds_blocked_bonus": 0,
+      "regulatory_legal_threat_bonus": 0,
+      "specialist_handling_bonus": 0,
+      "retrieval_weakness_bonus": 8
+    },
+    "top_retrieval_score": 0.4988,
+    "created_at": "2025-04-14T10:00:00Z",
+    "rank": 12,
+    "expedited": false
+  }
+]

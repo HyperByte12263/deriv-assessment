@@ -6,9 +6,11 @@ outputs/llm_calls.jsonl for traceability.
 
 Provider: LLM_PROVIDER (anthropic | gemini) if set, else whichever key exists.
 """
+import hashlib
 import json
 import os
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -68,6 +70,14 @@ def _gemini(prompt, system, json_mode, timeout):
 
 
 CALLERS = {"anthropic": _anthropic, "gemini": _gemini}
+MODEL_DEFAULTS = {"anthropic": ("ANTHROPIC_MODEL", "claude-opus-5-5"), "gemini": ("GEMINI_MODEL", "gemini-flash-lite-latest")}
+
+
+def model_name(name):
+    if name not in MODEL_DEFAULTS:
+        return "rules-fallback"
+    var, default = MODEL_DEFAULTS[name]
+    return os.getenv(var, default)
 
 
 def _log(record):
@@ -76,7 +86,20 @@ def _log(record):
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def complete(prompt, system="", json_mode=False, timeout=30, tag=""):
+def _record(stage, name, prompt, system, input_artifacts, output_artifact, **extra):
+    return {
+        "stage": stage,
+        "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "provider": name or "offline",
+        "model": model_name(name),
+        "prompt_hash": hashlib.sha256((system + "\n" + prompt).encode("utf-8")).hexdigest()[:16],
+        "input_artifacts": list(input_artifacts),
+        "output_artifact": output_artifact,
+        **extra,
+    }
+
+
+def complete(prompt, system="", json_mode=False, timeout=60, tag="", input_artifacts=(), output_artifact=None):
     """Return the model's text, or None (no key / error / refusal)."""
     name = provider()
     if name is None:
@@ -87,16 +110,15 @@ def complete(prompt, system="", json_mode=False, timeout=30, tag=""):
         text = CALLERS[name](prompt, system, json_mode, timeout)
     except Exception as e:  # any provider failure -> caller falls back
         error = f"{type(e).__name__}: {e}"
-    _log({
-        "tag": tag,
-        "provider": name,
-        "prompt": prompt,
-        "system": system,
-        "response": text,
-        "error": error,
-        "seconds": round(time.time() - start, 2),
-    })
+    _log(_record(tag, name, prompt, system, input_artifacts, output_artifact,
+                 prompt=prompt, response=text, error=error, seconds=round(time.time() - start, 2)))
     return text
+
+
+def log_offline(stage, prompt, system="", input_artifacts=(), output_artifact=None):
+    """Record a stage that ran on the rules fallback because no provider is configured."""
+    _log(_record(stage, None, prompt, system, input_artifacts, output_artifact,
+                 response=None, error="no LLM provider configured; rules fallback used"))
 
 
 def strip_fences(text):
@@ -107,9 +129,10 @@ def strip_fences(text):
     return text.strip()
 
 
-def complete_json(prompt, system="", timeout=30, tag=""):
+def complete_json(prompt, system="", timeout=60, tag="", input_artifacts=(), output_artifact=None):
     """Parsed JSON from the model, or None. Callers still validate the shape."""
-    text = complete(prompt, system, json_mode=True, timeout=timeout, tag=tag)
+    text = complete(prompt, system, json_mode=True, timeout=timeout, tag=tag,
+                    input_artifacts=input_artifacts, output_artifact=output_artifact)
     if text is None:
         return None
     try:

@@ -1,0 +1,57 @@
+[
+  {
+    "ticket_id": "T07",
+    "channel": "email",
+    "draft_reply": "Dear customer, thank you for contacting us about \"Formal complaint if funds remain blocked\". We understand this is important to you. Customers can download account statements from the reports or account history section. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "citations": [
+      "KB07",
+      "KB05"
+    ],
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_legal_or_compliance_review). Owner queue(s): Compliance, Risk. Do not send automatically.",
+    "draft_source": "template"
+  },
+  {
+    "ticket_id": "T02",
+    "channel": "chat",
+    "draft_reply": "Hi, thank you for contacting us about \"Can't log in after password reset\". We understand this is important to you. Invalid session or login failures can result from expired sessions, password-reset timing, cached credentials, or device-specific authentication issues. Withdrawals may be delayed if additional verification or security review is required. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "citations": [
+      "KB04",
+      "KB01"
+    ],
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): General Support, Engineering. Do not send automatically.",
+    "draft_source": "template"
+  },
+  {
+    "ticket_id": "T01",
+    "channel": "email",
+    "draft_reply": "Dear customer, thank you for contacting us about \"Withdrawal still pending after 5 days\". We understand this is important to you. Withdrawals may be delayed if additional verification or security review is required. If a customer was charged but the deposit is not visible, first confirm transaction reference details and whether the payment settled successfully. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "citations": [
+      "KB01",
+      "KB03"
+    ],
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): Payments. Do not send automatically.",
+    "draft_source": "template"
+  },
+  {
+    "ticket_id": "T09",
+    "channel": "email",
+    "draft_reply": "Dear customer, thank you for contacting us about \"Charged twice for one deposit\". We understand this is important to you. If a customer was charged but the deposit is not visible, first confirm transaction reference details and whether the payment settled successfully. Previously verified customers may occasionally be asked for additional documents due to regulatory, risk, or account-security checks. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "citations": [
+      "KB03",
+      "KB02"
+    ],
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): Payments. Do not send automatically.",
+    "draft_source": "template"
+  },
+  {
+    "ticket_id": "T11",
+    "channel": "email",
+    "draft_reply": "Dear customer, thank you for contacting us about \"Please tell me exact reason for suspension\". We understand this is important to you. Customers can download account statements from the reports or account history section. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "citations": [
+      "KB07",
+      "KB05"
+    ],
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_legal_or_compliance_review). Owner queue(s): Compliance, Risk. Do not send automatically.",
+    "draft_source": "template"
+  }
+]
