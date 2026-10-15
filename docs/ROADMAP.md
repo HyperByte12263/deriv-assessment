@@ -6,6 +6,38 @@ The 60-minute build proves the shape: staged, validated, offline-safe, every LLM
 
 **The LLM proposes, code decides.** Every step below adds measurement or capability around the LLM. None of them hands a checkable decision (priority, vocabulary, safety label, citations) to the model.
 
+## Priorities at a glance (MoSCoW)
+
+Numbers and letters refer to the sections below. The ordering rule is that anything protecting customers or compliance, or that we need in order to measure, comes first. Anything that only saves money or adds capability waits until the eval set shows it helps.
+
+| MoSCoW | When | Item | Why this tier |
+|---|---|---|---|
+| **Must** | before real customer traffic | **1** Labelled eval set + metrics (intent F1, safety under-labelling rate) | Without it, every later change is a guess. Every other item is measured against it. |
+| **Must** | before real customer traffic | **5** Prompt-injection hardening beyond regex + injection eval slice | OWASP risk #1. Today's regex baseline is easy to get around ([SECURITY.md](SECURITY.md)). |
+| **Must** | before real customer traffic | **8** PII redaction before model calls + retention policy for logs and cache | Regulated financial data. The call log stores prompts. |
+| **Must** | before real customer traffic | **6** Review screen for drafts (approve / edit / reject) | The human gate has to be a real workflow, not just a note. |
+| **Must** | before real customer traffic | **C** Postgres as system of record (runs, decisions, reviews, audit) | The review screen and audit trail both depend on it. |
+| **Must** | before writing to real systems | **D3** Idempotent side effects (idempotency keys, upserts, outbox) | Retries must never double-assign a ticket or double-send a reply. |
+| **Should** | first weeks after launch | **2** Calibrate the 0.55 threshold; hybrid retrieval (BM25 + pgvector) | Today 11 of 12 tickets get the weak-retrieval bonus, which distorts priority. |
+| **Should** | first weeks after launch | **B (rest)** + **3** Pydantic for parsing raw output + schema-constrained generation | Removes the key-drift class of bugs we hit live. |
+| **Should** | first weeks after launch | **7** Two-tier guardrail: an LLM grounding/judge check after the regex tier (DoorDash) | Catches unsupported claims the banned-phrase list can't. Fewer template fallbacks. |
+| **Should** | first weeks after launch | **10** Cost and latency per ticket in the log + dashboard | Needed before choosing models or justifying the cascade. |
+| **Should** | first weeks after launch | **D1** + **D4** Per-ticket LLM cache + replay by `run_id` | Makes LLM runs replayable for audit, as the brief asks, and cuts repeat cost. |
+| **Should** | first weeks after launch | **4** Real language detection + back-translation check, per-language eval | The offline glossary covers only Malay and Hinglish. |
+| **Should** | when volume grows | **9** Batching at scale (token-budget chunking, rate limits, backoff) | One call per stage doesn't survive 10,000 tickets. |
+| **Could** | once the eval set shows a gain | **A** Verifier agent on disagreement / high-risk tickets, as a calibrated cascade | Ship only if it measurably reduces errors. |
+| **Could** | once the eval set shows a gain | Conformal abstention thresholds | Gives Compliance a bounded error rate on auto-handled tickets. |
+| **Could** | once the eval set shows a gain | **11** Model routing by risk (cheap model first, stronger for legal-risk drafts) | Pure cost/quality optimisation, which needs data from item 10. |
+| **Could** | later | Past resolved tickets as a second retrieval source (LinkedIn KG-RAG) | Promising, but needs a clean history of resolved tickets first. |
+| **Could** | later | Ops-editable routing rules as data (Zendesk-style), safety floor kept in code | Useful once Ops wants to change rules without a deploy. |
+| **Could** | later | **D2** Stage memoisation / resume from the failed stage | Saves time on long runs; little value at today's batch size. |
+| **Could** | later | **13** Tune priority weights from outcomes (deterministic, Ops-approved) | Needs months of outcome data. |
+| **Could** | later | **14** Multi-turn assistant seeded from `handoff_memory.json` | A new product surface, not a fix. |
+| **Won't (this phase)** | revisit after pilot | **12** Writing directly into the CRM/queue system | Pilot as agent-assist next to existing tools first; needs D3. |
+| **Won't (this phase)** | revisit after pilot | **15** MCP gateway exposing KB search to other agents | Only once the core pipeline is measured and stable. |
+| **Won't (this phase)** | revisit after pilot | Fine-tuning our own classifier | Needs the eval and review data first. |
+| **Won't (ever)** | — | Auto-sending replies with no human review, or a multi-agent debate on every ticket | Against the safety design. The cost and latency don't buy measured accuracy. |
+
 ## Next 1–2 days: measure before improving
 
 | # | Work | Fixes | How we'd know it worked |
