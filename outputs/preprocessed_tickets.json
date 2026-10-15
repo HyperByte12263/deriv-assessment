@@ -23,11 +23,11 @@
     "ticket_id": "T03",
     "original_subject": "Dokumen tambahan diminta",
     "original_message": "Saya sudah lulus pengesahan sebelum ini tetapi sekarang diminta dokumen tambahan lagi. Kenapa akaun saya disemak semula?",
-    "subject_for_processing": "documents additional requested",
-    "message_for_processing": "I already passed verification before this but now requested documents additional again. why account I reviewed again?",
+    "subject_for_processing": "Additional documents requested",
+    "message_for_processing": "I already passed verification before but now I am asked for additional documents again. Why is my account being reviewed again?",
     "original_language": "ms",
     "translated": true,
-    "translation_method": "glossary"
+    "translation_method": "llm"
   },
   {
     "ticket_id": "T04",
@@ -54,10 +54,10 @@
     "original_subject": "Deposit failed but money debited",
     "original_message": "Mera bank account se paise cut gaye but deposit platform pe reflect nahi hua. Kya mujhe wait karna chahiye ya complaint raise karu?",
     "subject_for_processing": "Deposit failed but money debited",
-    "message_for_processing": "my bank account from money were debited but deposit platform on did not reflect. should I wait or raise a complaint?",
+    "message_for_processing": "Money was deducted from my bank account but the deposit was not reflected on the platform. Should I wait or raise a complaint?",
     "original_language": "hi-en",
     "translated": true,
-    "translation_method": "glossary"
+    "translation_method": "llm"
   },
   {
     "ticket_id": "T07",

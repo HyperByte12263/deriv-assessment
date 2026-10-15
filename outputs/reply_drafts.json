@@ -2,51 +2,51 @@
   {
     "ticket_id": "T07",
     "channel": "email",
-    "draft_reply": "Dear customer, thank you for contacting us about \"Formal complaint if funds remain blocked\". We understand this is important to you. Your request has been passed to the relevant team. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "draft_reply": "Dear Customer,\n\nWe acknowledge your concern regarding your account restriction and blocked funds. Please be assured that our specialist team will contact you if any further information is needed. A team member will review your case.\n\nSincerely,\nCustomer Support",
     "citations": [
       "KB07"
     ],
-    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_legal_or_compliance_review). Owner queue(s): Compliance, Risk. Do not send automatically.",
-    "draft_source": "template"
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_legal_or_compliance_review). Owner queue(s): Risk, Compliance. Do not send automatically.",
+    "draft_source": "llm"
   },
   {
     "ticket_id": "T02",
     "channel": "chat",
-    "draft_reply": "Hi, thank you for contacting us about \"Can't log in after password reset\". We understand this is important to you. Invalid session or login failures can result from expired sessions, password-reset timing, cached credentials, or device-specific authentication issues. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "draft_reply": "Hi, we acknowledge your login and invalid session issues after resetting your password. Please try a clean login flow and let us know your platform details if it persists. A team member will review your case.",
     "citations": [
       "KB04"
     ],
-    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): General Support, Engineering. Do not send automatically.",
-    "draft_source": "template"
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): General Support. Do not send automatically.",
+    "draft_source": "llm"
   },
   {
     "ticket_id": "T01",
     "channel": "email",
-    "draft_reply": "Dear customer, thank you for contacting us about \"Withdrawal still pending after 5 days\". We understand this is important to you. Withdrawals may be delayed if additional verification or security review is required. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "draft_reply": "Dear Customer,\n\nWe acknowledge your concern regarding your pending withdrawal. Please note that withdrawals may be delayed if additional verification or security review is required. We recommend checking whether all requested documents were submitted and whether your chosen payment method is eligible. A team member will review your case.\n\nSincerely,\nCustomer Support",
     "citations": [
       "KB01"
     ],
     "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): Payments. Do not send automatically.",
-    "draft_source": "template"
+    "draft_source": "llm"
   },
   {
-    "ticket_id": "T09",
-    "channel": "email",
-    "draft_reply": "Dear customer, thank you for contacting us about \"Charged twice for one deposit\". We understand this is important to you. If a customer was charged but the deposit is not visible, first confirm transaction reference details and whether the payment settled successfully. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "ticket_id": "T06",
+    "channel": "chat",
+    "draft_reply": "Hi, we acknowledge that your deposit is not reflecting despite a bank debit. Please confirm your transaction reference details and whether the payment settled successfully, as some methods take time to reconcile. A team member will review your case.",
     "citations": [
       "KB03"
     ],
     "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): Payments. Do not send automatically.",
-    "draft_source": "template"
+    "draft_source": "llm"
   },
   {
-    "ticket_id": "T11",
+    "ticket_id": "T09",
     "channel": "email",
-    "draft_reply": "Dear customer, thank you for contacting us about \"Please tell me exact reason for suspension\". We understand this is important to you. Your request has been passed to the relevant team. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
+    "draft_reply": "Dear customer, thank you for contacting us about \"Charged twice for one deposit\". We understand this is important to you. Some payment methods can take time to reconcile. A specialist will review your case and contact you if any further information is needed. We are not able to confirm an outcome or timeline until that review is complete.",
     "citations": [
-      "KB07"
+      "KB03"
     ],
-    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_legal_or_compliance_review). Owner queue(s): Compliance, Risk. Do not send automatically.",
-    "draft_source": "template"
+    "review_gate_note": "HUMAN REVIEW REQUIRED before sending (needs_specialist_review). Owner queue(s): Payments. Do not send automatically.",
+    "draft_source": "template (llm draft failed checks)"
   }
 ]

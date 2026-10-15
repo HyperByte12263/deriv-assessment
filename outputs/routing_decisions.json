@@ -4,123 +4,120 @@
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "intent=withdrawal_issue, urgency=high; best KB KB01 (0.3016); priority 43 (expedited)",
+    "routing_rationale": "Intent withdrawal_issue and KB01 Withdrawal review timelines require routing to Payments.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T02",
     "queues": [
-      "General Support",
-      "Engineering"
+      "General Support"
     ],
-    "routing_rationale": "intent=login_access, urgency=high; best KB KB04 (0.456); priority 53 (expedited)",
+    "routing_rationale": "Intent login_access and KB04 Account access and session issues point to General Support.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T03",
     "queues": [
       "Compliance"
     ],
-    "routing_rationale": "intent=verification_kyc, urgency=medium; best KB KB02 (0.3331); priority 28",
+    "routing_rationale": "Intent verification_kyc and KB02 Additional verification checks point to Compliance.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T04",
     "queues": [
-      "Product",
-      "Engineering"
+      "Product"
     ],
-    "routing_rationale": "intent=product_behavior, urgency=medium; best KB KB08 (0.5083); priority 18",
-    "reply_safety_label": "safe_to_send_after_review",
+    "routing_rationale": "Intent product_behavior and KB08 Trading bot and strategy-performance caveats point to Product.",
+    "reply_safety_label": "needs_specialist_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T05",
     "queues": [
       "Privacy"
     ],
-    "routing_rationale": "intent=privacy_request, urgency=medium; best KB KB09 (0.5606); priority 20",
+    "routing_rationale": "Intent privacy_request and KB09 Data deletion and account closure requests point to Privacy.",
     "reply_safety_label": "needs_legal_or_compliance_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T06",
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "intent=deposit_issue, urgency=medium; best KB KB03 (0.2954); priority 18",
-    "reply_safety_label": "safe_to_send_after_review",
-    "expedited": false,
-    "routing_source": "rules"
+    "routing_rationale": "Intent deposit_issue and KB03 Deposit pending or missing after bank debit point to Payments.",
+    "reply_safety_label": "needs_specialist_review",
+    "expedited": true,
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T07",
     "queues": [
-      "Compliance",
-      "Risk"
+      "Risk",
+      "Compliance"
     ],
-    "routing_rationale": "intent=account_restriction, urgency=critical, flags=mentions_funds_blocked+mentions_regulator_or_legal_threat; best KB KB07 (0.3927); priority 113 (expedited)",
+    "routing_rationale": "Legal threat flag and KB07 Account restriction and review communication require Risk and Compliance queues.",
     "reply_safety_label": "needs_legal_or_compliance_review",
     "expedited": true,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T08",
     "queues": [
       "General Support"
     ],
-    "routing_rationale": "intent=statement_export, urgency=low; best KB KB05 (0.4988); priority 11",
+    "routing_rationale": "Intent statement_export and KB05 Statement and report exports point to General Support.",
     "reply_safety_label": "safe_to_send_after_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T09",
     "queues": [
       "Payments"
     ],
-    "routing_rationale": "intent=deposit_issue, urgency=high; best KB KB03 (0.3273); priority 43 (expedited)",
+    "routing_rationale": "Intent deposit_issue and KB03 Deposit pending or missing after bank debit point to Payments.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": true,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T10",
     "queues": [
       "Compliance"
     ],
-    "routing_rationale": "intent=verification_kyc, urgency=medium; best KB KB06 (0.5417); priority 28",
+    "routing_rationale": "Intent verification_kyc and KB06 Proof of address review guidance point to Compliance.",
     "reply_safety_label": "needs_specialist_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T11",
     "queues": [
-      "Compliance",
       "Risk"
     ],
-    "routing_rationale": "intent=account_restriction, urgency=high; best KB KB07 (0.3614); priority 43 (expedited)",
+    "routing_rationale": "Intent account_restriction and KB07 Account restriction and review communication point to Risk.",
     "reply_safety_label": "needs_legal_or_compliance_review",
-    "expedited": true,
-    "routing_source": "rules"
+    "expedited": false,
+    "routing_source": "llm"
   },
   {
     "ticket_id": "T12",
     "queues": [
       "Developer Support"
     ],
-    "routing_rationale": "intent=api_support, urgency=medium; best KB KB10 (0.5017); priority 18",
+    "routing_rationale": "Intent api_support and KB10 API usage and rate limits point to Developer Support.",
     "reply_safety_label": "safe_to_send_after_review",
     "expedited": false,
-    "routing_source": "rules"
+    "routing_source": "llm"
   }
 ]

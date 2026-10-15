@@ -64,11 +64,18 @@ def translate_batch(tickets, input_artifacts, output_artifact):
     else:
         response = llm_client.complete_json(prompt, SYSTEM, tag=stage,
                                             input_artifacts=input_artifacts, output_artifact=output_artifact)
+    originals = {t["ticket_id"]: t for t in todo}
     by_id = {}
     if isinstance(response, list):
         for item in response:
-            if isinstance(item, dict) and item.get("subject_en") and item.get("message_en"):
-                by_id[str(item.get("ticket_id"))] = (item["subject_en"], item["message_en"], "llm")
+            if not isinstance(item, dict) or str(item.get("ticket_id")) not in originals:
+                continue
+            orig = originals[str(item["ticket_id"])]
+            # Models drift on key names; accept either, but reject an untranslated echo of the original.
+            subj = item.get("subject_en") or item.get("subject")
+            msg = item.get("message_en") or item.get("message")
+            if isinstance(subj, str) and isinstance(msg, str) and msg.strip() and msg.strip() != orig["message"].strip():
+                by_id[orig["ticket_id"]] = (subj, msg, "llm")
     for t in todo:  # any ticket the model missed falls back to the glossary
         by_id.setdefault(t["ticket_id"], (glossary_translate(t["subject"]), glossary_translate(t["message"]), "glossary"))
     return by_id

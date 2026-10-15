@@ -21,9 +21,9 @@ Tickets processed: 12
 | Urgency | Count |
 |---|---|
 | critical | 1 |
-| high | 4 |
-| medium | 6 |
-| low | 1 |
+| high | 5 |
+| medium | 4 |
+| low | 2 |
 
 ## Top recurring themes (best-matching KB article)
 
@@ -35,14 +35,16 @@ Tickets processed: 12
 
 ## Legal / regulatory risk
 
-- T07 -> Compliance, Risk
+- T07 -> Risk, Compliance
 
 ## Needs specialist handling
 
 - T01 (withdrawal_issue)
 - T02 (login_access)
 - T03 (verification_kyc)
+- T04 (product_behavior)
 - T05 (privacy_request)
+- T06 (deposit_issue)
 - T07 (account_restriction)
 - T09 (deposit_issue)
 - T10 (verification_kyc)
@@ -52,8 +54,8 @@ Tickets processed: 12
 
 | Rank | Ticket | Score | Queues | Safety label |
 |---|---|---|---|---|
-| 1 | T07 | 113 | Compliance, Risk | needs_legal_or_compliance_review |
-| 2 | T02 | 53 | General Support, Engineering | needs_specialist_review |
+| 1 | T07 | 113 | Risk, Compliance | needs_legal_or_compliance_review |
+| 2 | T02 | 53 | General Support | needs_specialist_review |
 | 3 | T01 | 43 | Payments | needs_specialist_review |
-| 4 | T09 | 43 | Payments | needs_specialist_review |
-| 5 | T11 | 43 | Compliance, Risk | needs_legal_or_compliance_review |
+| 4 | T06 | 43 | Payments | needs_specialist_review |
+| 5 | T09 | 43 | Payments | needs_specialist_review |

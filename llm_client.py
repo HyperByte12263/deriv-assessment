@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 LOG_PATH = Path(os.getenv("LLM_LOG", "outputs/llm_calls.jsonl"))
+RETRY_WAIT = float(os.getenv("LLM_RETRY_WAIT", "2"))
 KEY_VARS = {"anthropic": "ANTHROPIC_API_KEY", "gemini": "GEMINI_API_KEY"}
 
 
@@ -104,15 +105,20 @@ def complete(prompt, system="", json_mode=False, timeout=60, tag="", input_artif
     name = provider()
     if name is None:
         return None
-    start = time.time()
-    text, error = None, None
-    try:
-        text = CALLERS[name](prompt, system, json_mode, timeout)
-    except Exception as e:  # any provider failure -> caller falls back
-        error = f"{type(e).__name__}: {e}"
-    _log(_record(tag, name, prompt, system, input_artifacts, output_artifact,
-                 prompt=prompt, response=text, error=error, seconds=round(time.time() - start, 2)))
-    return text
+    for attempt in (1, 2):  # one retry, then the caller falls back to rules
+        start = time.time()
+        text, error = None, None
+        try:
+            text = CALLERS[name](prompt, system, json_mode, timeout)
+        except Exception as e:  # any provider failure -> caller falls back
+            error = f"{type(e).__name__}: {e}"
+        _log(_record(tag, name, prompt, system, input_artifacts, output_artifact, attempt=attempt,
+                     prompt_text=prompt, response=text, error=error, seconds=round(time.time() - start, 2)))
+        if text is not None:
+            return text
+        if attempt == 1:
+            time.sleep(RETRY_WAIT)
+    return None
 
 
 def log_offline(stage, prompt, system="", input_artifacts=(), output_artifact=None):
@@ -136,6 +142,10 @@ def complete_json(prompt, system="", timeout=60, tag="", input_artifacts=(), out
     if text is None:
         return None
     try:
-        return json.loads(strip_fences(text))
+        data = json.loads(strip_fences(text))
     except json.JSONDecodeError:
         return None
+    # Models sometimes wrap the requested array, e.g. {"tickets": [...]}; unwrap a single list value.
+    if isinstance(data, dict) and len(data) == 1 and isinstance(next(iter(data.values())), list):
+        return next(iter(data.values()))
+    return data

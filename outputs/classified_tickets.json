@@ -9,7 +9,7 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T02",
@@ -21,7 +21,7 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T03",
@@ -33,43 +33,43 @@
     "requires_specialist_handling": true,
     "original_language": "ms",
     "translated": true,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T04",
     "intent": "product_behavior",
     "urgency": "medium",
-    "sentiment": "neutral",
-    "mentions_funds_blocked": false,
-    "mentions_regulator_or_legal_threat": false,
-    "requires_specialist_handling": false,
-    "original_language": "en",
-    "translated": false,
-    "classification_source": "rules"
-  },
-  {
-    "ticket_id": "T05",
-    "intent": "privacy_request",
-    "urgency": "medium",
-    "sentiment": "neutral",
+    "sentiment": "calm",
     "mentions_funds_blocked": false,
     "mentions_regulator_or_legal_threat": false,
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
+  },
+  {
+    "ticket_id": "T05",
+    "intent": "privacy_request",
+    "urgency": "medium",
+    "sentiment": "calm",
+    "mentions_funds_blocked": false,
+    "mentions_regulator_or_legal_threat": false,
+    "requires_specialist_handling": true,
+    "original_language": "en",
+    "translated": false,
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T06",
     "intent": "deposit_issue",
-    "urgency": "medium",
-    "sentiment": "neutral",
+    "urgency": "high",
+    "sentiment": "frustrated",
     "mentions_funds_blocked": false,
     "mentions_regulator_or_legal_threat": false,
-    "requires_specialist_handling": false,
+    "requires_specialist_handling": true,
     "original_language": "hi-en",
     "translated": true,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T07",
@@ -81,7 +81,7 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T08",
@@ -93,7 +93,7 @@
     "requires_specialist_handling": false,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T09",
@@ -105,7 +105,7 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T10",
@@ -117,7 +117,7 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T11",
@@ -129,18 +129,18 @@
     "requires_specialist_handling": true,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   },
   {
     "ticket_id": "T12",
     "intent": "api_support",
-    "urgency": "medium",
-    "sentiment": "neutral",
+    "urgency": "low",
+    "sentiment": "calm",
     "mentions_funds_blocked": false,
     "mentions_regulator_or_legal_threat": false,
     "requires_specialist_handling": false,
     "original_language": "en",
     "translated": false,
-    "classification_source": "rules"
+    "classification_source": "llm"
   }
 ]

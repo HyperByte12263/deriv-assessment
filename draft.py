@@ -11,8 +11,11 @@ from vocab import LLM_STAGES, MIN_GUIDANCE_SCORE
 
 BANNED = re.compile(
     r"\b(guarantee[ds]?|will be (approved|released|resolved|refunded)|within \d+\s*(hours?|days?|minutes?)"
-    r"|definitely|promise|triggered by|our (risk|fraud) (system|model|rules))\b", re.I)
-AGENT_FACING = re.compile(r"\b(support should|agents should|support may|should be escalated|ask the customer|avoid)\b", re.I)
+    r"|definitely|promise|triggered by|our (risk|fraud) (system|model|rules)"
+    r"|shortly|right away|as soon as possible"  # unsupported timelines
+    r"|(the|a) customer|should be escalated|agents? should)\b", re.I)  # agent-facing KB wording copied verbatim
+AGENT_FACING = re.compile(r"\b(support should|agents should|support may|should be escalated|ask the customer|avoid"
+                          r"|(the|a) customer)\b", re.I)
 
 
 def customer_sentences(body):
@@ -52,10 +55,12 @@ SYSTEM = (
 def build_prompt(items):
     return (
         "Write a reply draft for each ticket. Each draft must acknowledge the issue, use the provided KB guidance "
-        "where relevant, and say a team member will review the case. Keep it under 120 words, matching the channel "
+        "where relevant (rephrased for the customer, addressing them as 'you'), and say a team member will review "
+        "the case. Never state or imply a timeline such as 'shortly'. Keep it under 120 words, matching the channel "
         "(email = formal, chat = short).\n"
         'Output a JSON array: {"ticket_id": str, "draft_reply": str, "citations": [article_id used]}\n'
-        "Cite only article IDs given for that ticket.\n"
+        "Cite only article IDs given for that ticket, and only articles you actually used; ignore an article "
+        "with a low relevance_score if it is unrelated to the customer's issue.\n"
         f"Tickets:\n{json.dumps(items, ensure_ascii=False, indent=2)}"
     )
 

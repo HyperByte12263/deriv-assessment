@@ -11,7 +11,7 @@
   },
   {
     "ticket_id": "T03",
-    "issue": "top score 0.3331 for KB02 is below 0.55",
+    "issue": "top score 0.4353 for KB02 is below 0.55",
     "recommended_improvement": "calibrate the threshold to the scorer (TF-IDF cosine rarely exceeds 0.55 on short KB articles) or add embedding similarity"
   },
   {
